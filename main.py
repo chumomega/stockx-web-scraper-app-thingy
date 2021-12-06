@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 import os
 import time
+from StockxTrendGetter import StockxTrendGetter
 
 
 def print_hi(name):
@@ -18,22 +19,16 @@ def print_hi(name):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
-    if 'soup_source' in os.environ:
-        source = os.environ['soup_source']
-    else:
-        begin = time.perf_counter()
-        request = Request('https://stockx.com/streetwear/most-popular', headers={'User-Agent': 'Mozilla/5.0'})
-        source = urlopen(request).read()
-        # os.environ['soup_source'] = source
-        end = time.perf_counter()
-        print("time_to_run: ", (end-begin))
 
-    page_soup = BeautifulSoup(source, 'html.parser')
+    top_trend_getter = StockxTrendGetter()
 
-    street_wear_list = page_soup.find_all('div', 'product-tile')
-    top_products = list(map(lambda product_div: product_div.find('p', 'css-1x3b5qq').string, street_wear_list))
+    begin = time.perf_counter()
+    top_sneakers = top_trend_getter.get_top_trending_sneakers()
+    top_streetwear = top_trend_getter.get_top_trending_streetwear()
+    end = time.perf_counter()
 
-    print("This is the page title: ", page_soup.title.string)
-    print("all the streetwear: ", top_products)
+    print("all the sneakers: ", top_sneakers)
+    print("all the streetwear: ", top_streetwear)
+    print("time_to_run: ", (end - begin))
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
